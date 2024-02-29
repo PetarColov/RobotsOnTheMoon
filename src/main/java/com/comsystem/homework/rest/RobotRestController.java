@@ -14,13 +14,23 @@ import com.comsystem.homework.robot.RobotOperations;
 @RequestMapping("/api/v1/robot/operation")
 public final class RobotRestController {
 
+    private final RobotOperations robotOperations;
+
+    public RobotRestController(RobotOperations robotOperations) {
+        this.robotOperations = robotOperations;
+    }
+
     /**
      * This method exposes the functionality of {@link RobotOperations#excavateStonesForDays(int)} via HTTP
      */
     @PostMapping("/excavation")
     public ResponseEntity<RobotPlan> excavateStones(@RequestParam Integer numberOfDays) {
-        // TODO
-        throw new ErrorResponseException(HttpStatus.I_AM_A_TEAPOT);
+        RobotPlan robotPlan = robotOperations.excavateStonesForDays(numberOfDays);
+        if (robotPlan != null) {
+            return new ResponseEntity<>(robotPlan, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -28,8 +38,12 @@ public final class RobotRestController {
      */
     @PostMapping("/approximation")
     public ResponseEntity<RobotPlan> approximateDays(@RequestParam Integer numberOfStones) {
-        // TODO
-        throw new ErrorResponseException(HttpStatus.I_AM_A_TEAPOT);
+        RobotPlan robotPlan = robotOperations.daysRequiredToCollectStones(numberOfStones);
+        if (robotPlan != null) {
+            return new ResponseEntity<>(robotPlan, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
